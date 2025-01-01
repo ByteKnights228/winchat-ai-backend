@@ -1,0 +1,255 @@
+{
+  "info": {
+    "name": "Ollama API Documentation",
+    "description": "A collection of API endpoints for Ollama API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generate a completion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/generate",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "generate"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"model\": \"llama3\",\n  \"prompt\": \"Why is the sky blue?\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Generate a chat completion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/chat",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "chat"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"model\": \"llama3\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"why is the sky blue?\"\n    }\n  ]\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/create",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "create"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"mario\",\n  \"modelfile\": \"FROM llama3\\nSYSTEM You are mario from Super Mario Bros.\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Local Models",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/tags",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "tags"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Show Model Information",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/show",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "show"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"llama3\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Copy a Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/copy",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "copy"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"llama3\",\n  \"destination\": \"llama3-backup\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete a Model",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/delete",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "delete"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"llama3:13b\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Pull a Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/pull",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "pull"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"llama3\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Push a Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/push",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "push"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"mattw/pygmalion:latest\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Embeddings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/embeddings",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "embeddings"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"model\": \"all-minilm\",\n  \"prompt\": \"Here is an article about llamas...\"\n}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Running Models",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://13.82.233.203:11723/api/ps",
+          "protocol": "http",
+          "host": ["13.82.233.203"],
+          "port": "11723",
+          "path": ["api", "ps"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
