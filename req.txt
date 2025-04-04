@@ -15,9 +15,6 @@ bcrypt==3.2.2
 beautifulsoup4==4.11.2
 beniget==0.4.1
 blessed==1.19.1
-blinker==1.5
-bottle==0.12.23
-Brlapi==0.8.4
 Brotli==1.0.9
 certifi==2022.9.24
 chardet==5.1.0
@@ -183,3 +180,6 @@ xdg==5
 zipp==1.0.0
 zope.interface==5.5.2
 zulu==2.0.0
+bottle==0.12.23
+blinker==1.5
+Brlapi==0.8.4

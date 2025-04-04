@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.llms import Ollama
+# from langchain_community.embeddings import OllamaEmbeddings
+# from langchain_community.llms import Ollama
+from langchain_ollama import OllamaEmbeddings
+from langchain_ollama import OllamaLLM as Ollama
 from dotenv import load_dotenv
 import os
 import uuid
 from datetime import datetime
+
 
 # Load environment variables
 load_dotenv()
@@ -16,7 +19,12 @@ EMBEDDING_MODEL_NAME = os.getenv("OLLAMA_EMBEDDING_MODEL")
 OLLAMA_API_SECRET = os.getenv("OLLAMA_SECRET")
 CHAT_MODEL_NAME = os.getenv("OLLAMA_CHAT_MODEL")
 
-CHROMA_PATH = "data\store\chroma"
+print("OLLAMA_BASE_URL: ", OLLAMA_BASE_URL)
+print("EMBEDDING_MODEL_NAME: ", EMBEDDING_MODEL_NAME)
+print("OLLAMA_API_SECRET: ", OLLAMA_API_SECRET)
+print("CHAT_MODEL_NAME: ", CHAT_MODEL_NAME)
+
+CHROMA_PATH = "data/store/chroma"
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -43,24 +51,45 @@ CORS(app)
 # Store conversation histories (in-memory storage)
 conversation_histories = {}
 
-# Helper function to process queries
-def process_query(query_text, session_id):
-    embedding_function = OllamaEmbeddings(
+embedding_function = OllamaEmbeddings(
         model=EMBEDDING_MODEL_NAME,
         base_url=OLLAMA_BASE_URL,
-        headers={"Authorization": f"Bearer {OLLAMA_API_SECRET}"}
     )
 
-    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+model = Ollama(
+        model=CHAT_MODEL_NAME,
+        base_url=OLLAMA_BASE_URL,
+    )
 
+# start time
+start_time = datetime.now()
+db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+# end time
+end_time = datetime.now()
+# print time taken in seconds
+print("Time taken to load chomra in seconds: ", end_time - start_time)
+# Helper function to process queries
+def process_query(query_text, session_id):
+    
+    
     history = conversation_histories.get(session_id, [])
+    
     formatted_history = "\n".join(
         [f"User: {entry['query']}\nBot: {entry['response']}" for entry in history]
     )
 
+
     articles = []
     sources = []
+    # time taken to search for similar articles
+    start_time = datetime.now()
     results = db.similarity_search_with_relevance_scores(query_text, k=10)
+    # end time
+    end_time = datetime.now()
+
+    # print time taken in seconds
+    print("Time taken to search for similar articles in seconds: ", end_time - start_time)
+
     for res in results:
         source = res[0].metadata["source"]
         if res[1] < 0.5:
@@ -76,12 +105,13 @@ def process_query(query_text, session_id):
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, history=formatted_history, question=query_text)
 
-    model = Ollama(
-        model=CHAT_MODEL_NAME,
-        base_url=OLLAMA_BASE_URL,
-        headers={"Authorization": f"Bearer {OLLAMA_API_SECRET}"}
-    )
+    start_time = datetime.now()
+   
     response_text = model.invoke(prompt)
+    end_time = datetime.now()
+
+    # print time taken in seconds
+    print("Time taken to generate response in seconds: ", end_time - start_time)
 
     history_entry = {"query": query_text, "response": response_text}
     if session_id not in conversation_histories:
@@ -112,7 +142,7 @@ def health():
 
     return jsonify({"status": "ok"})
 
-@app.route("/api/chat", methods=["POST"])
+@app.route("/api/chat2", methods=["POST"])
 def chat():
     """
     Handle chat requests.
@@ -120,6 +150,7 @@ def chat():
     Returns:
         JSON response with the bot's response.    
     """
+    print("Request received")
     data = request.json
     query_text = data.get("query", "")
     session_id = data.get("session_id", str(uuid.uuid4()))

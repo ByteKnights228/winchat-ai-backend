@@ -4,10 +4,14 @@
 
 ### 1. RAG Arch
 - **Test Embedding Models**
-  - mxbai-embed-large
+  - mxbai-embed-large _ done
   - MiniLM
   - Instructor-XL (quantized)
 - **Test Chat Models**
+  - LLaMA 2 (7B)
+  - GPT-J-6B
+  - Falcon-7B (quantized)
+- **Test Summarization Models**
   - LLaMA 2 (7B)
   - GPT-J-6B
   - Falcon-7B (quantized)

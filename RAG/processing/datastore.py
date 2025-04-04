@@ -5,7 +5,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema import Document
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.embeddings import OllamaEmbeddings
+# from langchain_community.embeddings import OllamaEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 
 from .summarizer import SimpleLLMSummarizer
@@ -28,7 +29,7 @@ class DataStore:
 
     RECIPES = ["chunking", "summarization"]
 
-    def __init__(self, chroma_path: str, data_path: str, embeddings:  Union[OllamaEmbeddings, OpenAIEmbeddings] = None, recepie: list = ["chunking"], surmarizer: SimpleLLMSummarizer = None) -> None:
+    def __init__(self, chroma_path: str, data_path: str, embeddings:  Union[OllamaEmbeddings, OpenAIEmbeddings] = None, recepie: list = ["chunking"], surmarizer: SimpleLLMSummarizer = None, save_summaries:bool=False, summary_dict:str="./summaries") -> None:
 
         if embeddings:
             self.embeddings = embeddings
@@ -36,17 +37,29 @@ class DataStore:
         self.chroma_path = chroma_path
         self.data_path = data_path
         self.summarizer = surmarizer
+        self.save_summaries = save_summaries
+        self.summary_dict = summary_dict
 
         for ingredient in recepie:
             if ingredient not in self.RECIPES:
                 raise ValueError(
                     f"Recipe {ingredient} not supported. Supported recipes are {self.RECIPES}")
-            if ingredient == "summarization" and not self.summarizer:
-                raise ValueError(
-                    f"Summarization recipe requires a summarizer function.")
+            if ingredient == "summarization":
+                
+                if not self.summarizer:
+                    raise ValueError(
+                        f"Summarization recipe requires a summarizer function.")
+
+                if self.save_summaries:
+                    if not os.path.exists(self.summary_dict):
+                        os.makedirs(self.summary_dict)
+
+                    logger.info(f"Summaries will be saved to {self.summary_dict}")
+                
 
         self.recipe = recepie
-
+        logger.info(
+            f"DataStore initialized with embeddings model: {self.embeddings.model}")
         logger.info(
             f"DataStore initialized with chroma_path: {chroma_path}, data_path: {data_path}")
 
@@ -67,6 +80,10 @@ class DataStore:
 
             if ingredient == "summarization":
                 chunks = self.summarizer.summarize_list(documents)
+
+
+                if self.save_summaries:
+                    self.summarizer.save_list(chunks, save_dir=self.summary_dict)
 
         self.save_to_chroma(chunks)
 
