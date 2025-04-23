@@ -1,7 +1,7 @@
 # Project Startup Instructions
 
 Follow the steps below to start the necessary services for the project:
-
+python -m pip install flask flask_cors langchain_community langchain-openai langchain-ollama langchain-chroma chromadb
 ---
 
 ## 1. Start Ollama
